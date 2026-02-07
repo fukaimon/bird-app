@@ -1,0 +1,70 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 16px;
+  background-color: #f9f9f9;
+}
+
+h1 {
+  font-size: 1.6em;
+  color: #2c7a7b;
+}
+
+p {
+  font-size: 1em;
+}
+
+/* ===== 科の折りたたみ表示 ===== */
+
+.family-title {
+  cursor: pointer;
+  user-select: none;
+  margin-top: 20px;
+  font-size: 0.9em;   /* ← ここを追加 */
+}
+
+
+.family-title::before {
+  content: "▶ ";
+}
+
+.family-title.open::before {
+  content: "▼ ";
+}
+
+.family-list {
+  display: none;
+  margin-left: 20px;
+}
+
+.family-list.open {
+  display: block;
+}
+
+.family-list {
+  list-style: none;     /* デフォルトの○を消す */
+  padding-left: 0;      /* 左の余白を消す */
+  margin-left: 10px;    /* 少しだけ左に寄せる（好みで調整） */
+}
+
+.family-list li::before {
+  content: "・";        /* ○の代わりに ・ を表示 */
+  margin-right: 6px;
+}
+
+.family-list li::before {
+  content: "";
+}
+
+/* ===== 種名と数・メモの整列 ===== */
+
+.family-list li {
+  display: flex;
+  align-items: center;   /* 縦位置を統一 */
+  gap: 6px;
+}
+
+.family-list label {
+  display: inline-block;
+  min-width: 10em;       /* ← 一番長い種名より右に来る幅 */
+}
+

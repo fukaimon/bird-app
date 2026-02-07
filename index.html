@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>野鳥記録</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>野鳥記録アプリ</h1>
+<p><div id="meta">
+
+  <div>
+    <label>日付：</label>
+    <input type="date" id="obsDate">
+    <label>開始：</label>
+    <input type="time" id="obsStartTime">
+
+    <label>終了：</label>
+    <input type="time" id="obsEndTime">
+  </div>
+
+  <div>
+    <label>場所：</label>
+    <input type="text" id="obsPlace" placeholder="例：東京都○○公園">
+  </div>
+
+  <div>
+    <label>天候：</label>
+    <input type="text" id="obsWeather" placeholder="例：晴れ・曇">
+  </div>
+
+  <div>
+    <label>観察者：</label>
+    <input type="text" id="obsObserver" placeholder="氏名">
+  </div>
+
+</div></p>
+
+<ul id="birdList"></ul>
+
+<button id="exportBtn">テキスト出力</button>
+<pre id="output"></pre>
+
+<script src="app.js"></script>
+</body>
+</html>
