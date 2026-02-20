@@ -43,7 +43,7 @@ p {
 .family-list {
   list-style: none;     /* デフォルトの○を消す */
   padding-left: 0;      /* 左の余白を消す */
-  margin-left: 1px;    /* 少しだけ左に寄せる（好みで調整） */
+  margin-left: 10px;    /* 少しだけ左に寄せる（好みで調整） */
 }
 
 .family-list li::before {
@@ -67,6 +67,7 @@ p {
   display: inline-block;
   min-width: 10em;       /* ← 一番長い種名より右に来る幅 */
 }
+
 
 
 
