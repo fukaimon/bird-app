@@ -1310,4 +1310,185 @@ birds.forEach(familyGroup => {
   output.textContent = result;
 });
 
+// ===== テキスト出力処理 =====
+exportBtn.addEventListener("click", () => {
+  let result = "";
+
+  // 種数カウンタ
+  let nativeSpeciesCount = 0;
+  let alienSpeciesCount = 0;
+
+  // ---- 鳥リスト ----
+  birds.forEach(familyGroup => {
+    familyGroup.species.forEach(bird => {
+      const checkbox = document.getElementById("bird-" + bird.id);
+      if (checkbox && checkbox.checked) {
+
+        if (bird.alien === true) {
+          alienSpeciesCount++;
+        } else {
+          nativeSpeciesCount++;
+        }
+
+        const countInput = checkbox.nextSibling.nextSibling;
+        const count = countInput.value ? countInput.value : "";
+        result += `${bird.name} ${count}\n`;
+      }
+    });
+  });
+
+  result += "\n";
+  result += `確認種数：${nativeSpeciesCount}種\n`;
+  result += `＋${alienSpeciesCount}種\n`;
+
+  output.textContent = result;
 });
+
+
+// ===== テキスト保存 =====
+const saveBtn = document.getElementById("saveBtn");
+const showRecordsBtn = document.getElementById("showRecordsBtn");
+const recordList = document.getElementById("recordList");
+
+
+// ===============================
+// ① 記録を保存
+// ===============================
+saveBtn.addEventListener("click", () => {
+
+  let record = {
+    date: obsDate.value,
+    place: obsPlace.value,
+    weather: obsWeather.value,
+    observer: obsObserver.value,
+    birds: []
+  };
+
+  // チェックされた種を保存
+  birds.forEach(familyGroup => {
+    familyGroup.species.forEach(bird => {
+      const checkbox = document.getElementById("bird-" + bird.id);
+      if (checkbox && checkbox.checked) {
+        record.birds.push(bird.id);
+      }
+    });
+  });
+
+  let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
+  records.push(record);
+  localStorage.setItem("birdRecords", JSON.stringify(records));
+
+  alert("記録を保存しました");
+});
+
+
+// ===============================
+// ② 保存済み記録を表示／折りたたみ
+// ===============================
+showRecordsBtn.addEventListener("click", () => {
+
+  // すでに表示されていたら閉じる
+  if (recordList.style.display === "block") {
+    recordList.style.display = "none";
+    showRecordsBtn.textContent = "保存済み記録を表示";
+    return;
+  }
+
+  // 表示する
+  recordList.style.display = "block";
+  showRecordsBtn.textContent = "保存済み記録を閉じる";
+  recordList.innerHTML = "";
+
+  let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
+
+  if (records.length === 0) {
+    recordList.textContent = "保存された記録はありません";
+    return;
+  }
+
+  records.forEach((record, index) => {
+
+    const row = document.createElement("div");
+
+    const title = document.createElement("span");
+    title.textContent =
+      (record.date || "日付なし") +
+      " " +
+      (record.place || "");
+
+    // 開くボタン
+    const openBtn = document.createElement("button");
+    openBtn.textContent = "開く";
+    openBtn.addEventListener("click", () => {
+      openRecord(index);
+    });
+
+    // 削除ボタン
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "削除";
+    deleteBtn.addEventListener("click", () => {
+      deleteRecord(index);
+    });
+
+    row.appendChild(title);
+    row.appendChild(openBtn);
+    row.appendChild(deleteBtn);
+
+    recordList.appendChild(row);
+  });
+});
+
+
+// ===============================
+// ③ 記録を開く
+// ===============================
+function openRecord(index) {
+
+  let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
+  let record = records[index];
+
+  if (!record) return;
+
+  // 入力欄を復元
+  obsDate.value = record.date || "";
+  obsPlace.value = record.place || "";
+  obsWeather.value = record.weather || "";
+  obsObserver.value = record.observer || "";
+
+  // 全チェック解除
+  birds.forEach(familyGroup => {
+    familyGroup.species.forEach(bird => {
+      const checkbox = document.getElementById("bird-" + bird.id);
+      if (checkbox) checkbox.checked = false;
+    });
+  });
+
+  // 保存されていた種を再チェック
+  record.birds.forEach(id => {
+    const checkbox = document.getElementById("bird-" + id);
+    if (checkbox) checkbox.checked = true;
+  });
+}
+
+
+// ===============================
+// ④ 記録を削除
+// ===============================
+function deleteRecord(index) {
+
+  if (!confirm("この記録を削除しますか？")) return;
+
+  let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
+  records.splice(index, 1);
+
+  localStorage.setItem("birdRecords", JSON.stringify(records));
+
+  alert("削除しました");
+
+  // 一覧を再表示
+  showRecordsBtn.click();
+}
+
+  
+});
+
