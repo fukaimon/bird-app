@@ -91,8 +91,7 @@ const birds = [
 {
   family: "ヨタカ科",
   species: [
-    { id: 68, name: "ヨタカ" },
-    { id: 801, name: "ヨタカ科sp." }
+    { id: 68, name: "ヨタカ" }
   ]
 }
 ,
@@ -1162,109 +1161,79 @@ const birds = [
   ]
 },
 {
+  family: "ゴマフスズメ科",
+  species: [
+    { id: 725, name: "ゴマフスズメ" },
+    { id: 726, name: "ミヤマシトド" },
+    { id: 727, name: "キガシラシトド" },
+    { id: 728, name: "サバンナシトド" },
+    { id: 729, name: "ウタスズメ" },
+    { id: 730, name: "ゴマフスズメ科sp." }
+  ]
+},
+{
+  family: "アメリカムシクイ科",
+  species: [
+    { id: 731, name: "カオグロアメリカムシクイ" },
+    { id: 732, name: "キヅタアメリカムシクイ" },
+    { id: 733, name: "アメリカムシクイ科sp." }
+  ]
+},
+{
   family: "外来種",
   species: [
-    { id: 734, name: "カナダガン" },
-    { id: 735, name: "コクチョウ" },
-    { id: 736, name: "コブハクチョウ" },
-    { id: 737, name: "コリンウズラ" },
-    { id: 738, name: "ヤマドリ" },
-    { id: 739, name: "タイリクキジ" },
-    { id: 740, name: "キジ" },
-    { id: 741, name: "インドクジャク" },
-    { id: 742, name: "コジュケイ" },
-    { id: 743, name: "テッケイ" },
-    { id: 744, name: "ドバト" },
-    { id: 745, name: "シラコバト" },
-    { id: 746, name: "クロエリセイタカシギ" },
-    { id: 747, name: "コウノトリ" },
-    { id: 748, name: "トキ" },
-    { id: 749, name: "オキナインコ" },
-    { id: 750, name: "ダルマインコ" },
-    { id: 751, name: "オオホンセイインコ" },
-    { id: 752, name: "ホンセイインコ" },
-    { id: 753, name: "セキセイインコ" },
-    { id: 754, name: "ヤマムスメ" },
-    { id: 755, name: "サンジャク" },
-    { id: 756, name: "カササギ" },
-    { id: 757, name: "メジロ" },
-    { id: 758, name: "ソウシチョウ" },
-    { id: 759, name: "ガビチョウ" },
-    { id: 760, name: "ヒゲガビチョウ" },
-    { id: 761, name: "カオジロガビチョウ" },
-    { id: 762, name: "カオグロガビチョウ" },
-    { id: 763, name: "ハッカチョウ" },
-    { id: 764, name: "ジャワハッカ" },
-    { id: 765, name: "ハイイロハッカ" },
-    { id: 766, name: "インドハッカ" },
-    { id: 767, name: "ホオジロムクドリ" },
-    { id: 768, name: "メンハタオリドリ" },
-    { id: 769, name: "オオキンランチョウ" },
-    { id: 770, name: "ブンチョウ" },
-    { id: 771, name: "シマキンパラ" },
-    { id: 772, name: "コシジロキンパラ" },
-    { id: 773, name: "ギンパラ" },
-    { id: 774, name: "キンパラ" },
-    { id: 775, name: "ヘキチョウ" },
-    { id: 776, name: "ホオアカカエデチョウ" },
-    { id: 777, name: "カエデチョウ" },
-    { id: 778, name: "ベニスズメ" },
-    { id: 779, name: "ホウオウジャク" },
-    { id: 780, name: "コウカンチョウ" },
-    { id: 781, name: "コウカンチョウ" },
-    { id: 782, name: "外来種sp." }
+    { id: 734, name: "カナダガン", alien: true  },
+    { id: 735, name: "コクチョウ", alien: true },
+    { id: 736, name: "コブハクチョウ", alien: true },
+    { id: 737, name: "コリンウズラ", alien: true },
+    { id: 738, name: "ヤマドリ", alien: true },
+    { id: 739, name: "タイリクキジ", alien: true },
+    { id: 740, name: "キジ", alien: true },
+    { id: 741, name: "インドクジャク", alien: true },
+    { id: 742, name: "コジュケイ", alien: true },
+    { id: 743, name: "テッケイ", alien: true },
+    { id: 744, name: "ドバト", alien: true },
+    { id: 745, name: "シラコバト", alien: true },
+    { id: 746, name: "クロエリセイタカシギ", alien: true },
+    { id: 747, name: "コウノトリ", alien: true },
+    { id: 748, name: "トキ", alien: true },
+    { id: 749, name: "オキナインコ", alien: true },
+    { id: 750, name: "ダルマインコ", alien: true },
+    { id: 751, name: "オオホンセイインコ", alien: true },
+    { id: 752, name: "ホンセイインコ", alien: true },
+    { id: 753, name: "セキセイインコ", alien: true },
+    { id: 754, name: "ヤマムスメ", alien: true },
+    { id: 755, name: "サンジャク", alien: true },
+    { id: 756, name: "カササギ", alien: true },
+    { id: 757, name: "メジロ", alien: true },
+    { id: 758, name: "ソウシチョウ", alien: true },
+    { id: 759, name: "ガビチョウ", alien: true },
+    { id: 760, name: "ヒゲガビチョウ", alien: true },
+    { id: 761, name: "カオジロガビチョウ", alien: true },
+    { id: 762, name: "カオグロガビチョウ", alien: true },
+    { id: 763, name: "ハッカチョウ", alien: true },
+    { id: 764, name: "ジャワハッカ", alien: true },
+    { id: 765, name: "ハイイロハッカ", alien: true },
+    { id: 766, name: "インドハッカ", alien: true },
+    { id: 767, name: "ホオジロムクドリ", alien: true },
+    { id: 768, name: "メンハタオリドリ", alien: true },
+    { id: 769, name: "オオキンランチョウ", alien: true },
+    { id: 770, name: "ブンチョウ", alien: true },
+    { id: 771, name: "シマキンパラ", alien: true },
+    { id: 772, name: "コシジロキンパラ", alien: true },
+    { id: 773, name: "ギンパラ", alien: true },
+    { id: 774, name: "キンパラ", alien: true },
+    { id: 775, name: "ヘキチョウ", alien: true },
+    { id: 776, name: "ホオアカカエデチョウ", alien: true },
+    { id: 777, name: "カエデチョウ", alien: true },
+    { id: 778, name: "ベニスズメ", alien: true },
+    { id: 779, name: "ホウオウジャク", alien: true },
+    { id: 780, name: "コウカンチョウ", alien: true },
+    { id: 781, name: "コウカンチョウ", alien: true },
+    { id: 782, name: "外来種sp.", alien: true }
   ]
 }
-
 ];
-
-// ===== 表示処理（折りたたみ対応） =====
-const list = document.getElementById("birdList");
-const exportBtn = document.getElementById("exportBtn");
-const output = document.getElementById("output");
-
-birds.forEach(familyGroup => {
-  // 科の見出し
-  const familyTitle = document.createElement("h2");
-  familyTitle.textContent = familyGroup.family;
-  familyTitle.classList.add("family-title");
-
-  // 科ごとのリスト（折りたたみ対象）
-  const familyList = document.createElement("ul");
-  familyList.classList.add("family-list");
-
-  // 開閉処理
-  familyTitle.addEventListener("click", () => {
-    familyTitle.classList.toggle("open");
-    familyList.classList.toggle("open");
-  });
-
-  list.appendChild(familyTitle);
-  list.appendChild(familyList);
-
-  familyGroup.species.forEach(bird => {
-    const li = document.createElement("li");
-
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.id = "bird-" + bird.id;
-
-    const label = document.createElement("label");
-    label.htmlFor = checkbox.id;
-    label.textContent = " " + bird.name + " ";
-
-    const countInput = document.createElement("input");
-    countInput.type = "text";
-    countInput.placeholder = "数・メモ";
-    countInput.style.width = "80px";
-
-    li.appendChild(checkbox);
-    li.appendChild(label);
-    li.appendChild(countInput);
-
-    familyList.appendChild(li);
-  });
-});
 
 // ===== 表示処理（折りたたみ対応） =====
 const list = document.getElementById("birdList");
@@ -1531,3 +1500,4 @@ function deleteRecord(index) {
   // 一覧を再表示
   showRecordsBtn.click();
 }
+
