@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded", function() {
+
 // ===== 観察情報入力欄 =====
 const obsDate = document.getElementById("obsDate");
 const obsStartTime = document.getElementById("obsStartTime");
@@ -1306,4 +1308,6 @@ birds.forEach(familyGroup => {
 });
 
   output.textContent = result;
+});
+
 });
