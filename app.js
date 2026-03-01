@@ -94,10 +94,9 @@ const birds = [
   family: "ヨタカ科",
   species: [
     { id: 68, name: "ヨタカ" },
-    { id: 1068, name: "ヨタカ科sp."  }    
+    { id: 1068, name: "ヨタカ科sp." }    
   ]
-}
-,
+},
 {
   family: "アマツバメ科",
   species: [
@@ -1499,3 +1498,4 @@ function deleteRecord(index) {
 
   showRecordsBtn.click();
 }
+
