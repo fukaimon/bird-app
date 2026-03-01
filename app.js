@@ -1413,6 +1413,12 @@ showRecordsBtn.addEventListener("click", () => {
 
   let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
 
+  records.sort((a, b) => {
+  if (!a.date) return 1;   // 日付なしは最後へ
+  if (!b.date) return -1;
+  return a.date.localeCompare(b.date);
+});
+  
   if (records.length === 0) {
     recordList.textContent = "保存された記録はありません";
     return;
@@ -1509,3 +1515,4 @@ function deleteRecord(index) {
 
   showRecordsBtn.click();
 }
+
