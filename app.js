@@ -73,7 +73,7 @@ const birds = [
       { id: 58, name: "カワアイサ" },
       { id: 59, name: "ウミアイサ" },
       { id: 60, name: "コウライアイサ" },
-      { id: 61, name: "カモ科." }
+      { id: 61, name: "カモ科sp." }
     ]
   },
 
@@ -87,13 +87,14 @@ const birds = [
       { id: 64, name: "ヤマドリ" },
       { id: 65, name: "キジ" },
       { id: 66, name: "ウズラ" },
-      { id: 67, name: "キジ科." }
+      { id: 67, name: "キジ科sp." }
     ]
   },
 {
   family: "ヨタカ科",
   species: [
-    { id: 68, name: "ヨタカ" }
+    { id: 68, name: "ヨタカ" },
+    { id: 1068, name: "ヨタカ科sp."  }    
   ]
 }
 ,
@@ -1272,51 +1273,34 @@ birds.forEach(familyGroup => {
 });
 
 // ===== テキスト出力処理 =====
-exportBtn.addEventListener("click", () => {
-  let result = "";
-
-// ---- 観察情報 ----
-if (obsDate.value) {
-  const formattedDate = obsDate.value.replace(/-/g, "/");
-  result += formattedDate;
-
-  if (obsStartTime.value || obsEndTime.value) {
-    result += " ";
-    if (obsStartTime.value) result += obsStartTime.value;
-    if (obsStartTime.value && obsEndTime.value) result += "–";
-    if (obsEndTime.value) result += obsEndTime.value;
-  }
-  result += "\n";
-}
-
-if (obsPlace.value) result += `${obsPlace.value}\n`;
-if (obsWeather.value) result += `天候:${obsWeather.value}\n`;
-if (obsObserver.value) result += `観察者:${obsObserver.value}\n`;
-
-result += "\n";
-
-// ---- 鳥リスト ----
-birds.forEach(familyGroup => {
-  familyGroup.species.forEach(bird => {
-    const checkbox = document.getElementById("bird-" + bird.id);
-    if (checkbox && checkbox.checked) {
-      const countInput = checkbox.nextSibling.nextSibling;
-      const count = countInput.value ? countInput.value : "";
-      result += `${bird.name} ${count}\n`;
-    }
-  });
-});
-
-  output.textContent = result;
-});
-
 // ===== テキスト出力処理 =====
 exportBtn.addEventListener("click", () => {
+
   let result = "";
 
   // 種数カウンタ
   let nativeSpeciesCount = 0;
   let alienSpeciesCount = 0;
+
+  // ---- 観察情報 ----
+  if (obsDate.value) {
+    const formattedDate = obsDate.value.replace(/-/g, "/");
+    result += formattedDate;
+
+    if (obsStartTime.value || obsEndTime.value) {
+      result += " ";
+      if (obsStartTime.value) result += obsStartTime.value;
+      if (obsStartTime.value && obsEndTime.value) result += "–";
+      if (obsEndTime.value) result += obsEndTime.value;
+    }
+    result += "\n";
+  }
+
+  if (obsPlace.value) result += `${obsPlace.value}\n`;
+  if (obsWeather.value) result += `天候:${obsWeather.value}\n`;
+  if (obsObserver.value) result += `観察者:${obsObserver.value}\n`;
+
+  result += "\n";
 
   // ---- 鳥リスト ----
   birds.forEach(familyGroup => {
@@ -1332,6 +1316,7 @@ exportBtn.addEventListener("click", () => {
 
         const countInput = checkbox.nextSibling.nextSibling;
         const count = countInput.value ? countInput.value : "";
+
         result += `${bird.name} ${count}\n`;
       }
     });
@@ -1352,17 +1337,25 @@ const recordList = document.getElementById("recordList");
 
 
 // ===============================
-// ① 記録を保存
+// 0. 現在編集中の記録番号
+// ===============================
+let currentRecordIndex = null;
+
+
+// ===============================
+// ① 記録を保存（上書き対応）
 // ===============================
 saveBtn.addEventListener("click", () => {
 
   let record = {
-    date: obsDate.value,
-    place: obsPlace.value,
-    weather: obsWeather.value,
-    observer: obsObserver.value,
-    birds: []
-  };
+  date: obsDate.value,
+  startTime: obsStartTime.value,
+  endTime: obsEndTime.value,
+  place: obsPlace.value,
+  weather: obsWeather.value,
+  observer: obsObserver.value,
+  birds: []
+};
 
   // チェックされた種を保存
   birds.forEach(familyGroup => {
@@ -1375,10 +1368,21 @@ saveBtn.addEventListener("click", () => {
   });
 
   let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
-  records.push(record);
+
+  if (currentRecordIndex !== null) {
+    // ===== 上書き保存 =====
+    records[currentRecordIndex] = record;
+    alert("記録を上書き保存しました");
+  } else {
+    // ===== 新規保存 =====
+    records.push(record);
+    alert("記録を保存しました");
+  }
+
   localStorage.setItem("birdRecords", JSON.stringify(records));
 
-  alert("記録を保存しました");
+  // 保存後は編集状態を解除
+  currentRecordIndex = null;
 });
 
 
@@ -1387,14 +1391,12 @@ saveBtn.addEventListener("click", () => {
 // ===============================
 showRecordsBtn.addEventListener("click", () => {
 
-  // すでに表示されていたら閉じる
   if (recordList.style.display === "block") {
     recordList.style.display = "none";
     showRecordsBtn.textContent = "保存済み記録を表示";
     return;
   }
 
-  // 表示する
   recordList.style.display = "block";
   showRecordsBtn.textContent = "保存済み記録を閉じる";
   recordList.innerHTML = "";
@@ -1409,12 +1411,15 @@ showRecordsBtn.addEventListener("click", () => {
   records.forEach((record, index) => {
 
     const row = document.createElement("div");
-
     const title = document.createElement("span");
-    title.textContent =
-      (record.date || "日付なし") +
-      " " +
-      (record.place || "");
+
+    // ===== 日付を / 表示に変換 =====
+    let dateText = "日付なし";
+    if (record.date) {
+      dateText = record.date.replace(/-/g, "/");
+    }
+
+    title.textContent = dateText + " " + (record.place || "");
 
     // 開くボタン
     const openBtn = document.createElement("button");
@@ -1446,8 +1451,10 @@ function openRecord(index) {
 
   let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
   let record = records[index];
-
   if (!record) return;
+
+  // ★ 編集中インデックスを記憶
+  currentRecordIndex = index;
 
   // 入力欄を復元
   obsDate.value = record.date || "";
@@ -1485,11 +1492,10 @@ function deleteRecord(index) {
 
   alert("削除しました");
 
-  // 一覧を再表示
+  // 削除した記録を編集中だった場合リセット
+  if (currentRecordIndex === index) {
+    currentRecordIndex = null;
+  }
+
   showRecordsBtn.click();
 }
-
-  
-});
-
-
