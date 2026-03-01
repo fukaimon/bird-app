@@ -1216,11 +1216,6 @@ const birds = [
     { id: 782, name: "外来種sp.", alien: true }
   ]
 }
-
-
-
-
-
 ];
 
 // ===== 表示処理（折りたたみ対応） =====
@@ -1498,4 +1493,5 @@ function deleteRecord(index) {
 
   showRecordsBtn.click();
 }
+
 
