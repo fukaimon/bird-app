@@ -1,5 +1,3 @@
-document.addEventListener("DOMContentLoaded", function() {
-
 // ===== 観察情報入力欄 =====
 const obsDate = document.getElementById("obsDate");
 const obsStartTime = document.getElementById("obsStartTime");
@@ -94,7 +92,7 @@ const birds = [
   family: "ヨタカ科",
   species: [
     { id: 68, name: "ヨタカ" },
-    { id: 1068, name: "ヨタカ科sp." }    
+    { id: 1068, name: "ヨタカ科sp."  }
   ]
 },
 {
@@ -1163,6 +1161,25 @@ const birds = [
   ]
 },
 {
+  family: "ゴマフスズメ科",
+  species: [
+    { id: 725, name: "ゴマフスズメ" },
+    { id: 726, name: "ミヤマシトド" },
+    { id: 727, name: "キガシラシトド" },
+    { id: 728, name: "サバンナシトド" },
+    { id: 729, name: "ウタスズメ" },
+    { id: 730, name: "ゴマフスズメ科sp." }
+  ]
+},
+{
+  family: "アメリカムシクイ科",
+  species: [
+    { id: 731, name: "カオグロアメリカムシクイ" },
+    { id: 732, name: "キヅタアメリカムシクイ" },
+    { id: 733, name: "アメリカムシクイ科sp." }
+  ]
+},
+{
   family: "外来種",
   species: [
     { id: 734, name: "カナダガン", alien: true  },
@@ -1322,7 +1339,6 @@ exportBtn.addEventListener("click", () => {
 
   output.textContent = result;
 });
-
 
 // ===== テキスト保存 =====
 const saveBtn = document.getElementById("saveBtn");
@@ -1493,5 +1509,3 @@ function deleteRecord(index) {
 
   showRecordsBtn.click();
 }
-
-
