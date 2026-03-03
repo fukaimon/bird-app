@@ -1340,6 +1340,13 @@ exportBtn.addEventListener("click", () => {
   output.textContent = result;
 });
 
+// ===== ボタンにイベントをつける（←これを一番下に！）=====
+const exportTextBtn = document.getElementById("exportTextBtn");
+
+if (exportTextBtn) {
+  exportTextBtn.addEventListener("click", exportText);
+}
+
 // ===== テキスト保存 =====
 const saveBtn = document.getElementById("saveBtn");
 const showRecordsBtn = document.getElementById("showRecordsBtn");
@@ -1522,3 +1529,4 @@ function clearAllChecks() {
     cb.checked = false;
   });
 }
+
