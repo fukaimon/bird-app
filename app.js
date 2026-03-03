@@ -138,7 +138,6 @@ const birds = [
     { id: 92, name: "サケイ科sp." }
   ]
 },
-,
 {
   family: "ハト科",
   species: [
@@ -1284,7 +1283,6 @@ birds.forEach(familyGroup => {
 });
 
 // ===== テキスト出力処理 =====
-// ===== テキスト出力処理 =====
 exportBtn.addEventListener("click", () => {
 
   let result = "";
@@ -1420,12 +1418,6 @@ showRecordsBtn.addEventListener("click", () => {
 
   let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
 
-  records.sort((a, b) => {
-  if (!a.date) return 1;   // 日付なしは最後へ
-  if (!b.date) return -1;
-  return a.date.localeCompare(b.date);
-});
-  
   if (records.length === 0) {
     recordList.textContent = "保存された記録はありません";
     return;
@@ -1529,4 +1521,3 @@ function clearAllChecks() {
     cb.checked = false;
   });
 }
-
