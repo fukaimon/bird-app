@@ -1516,3 +1516,9 @@ function deleteRecord(index) {
   showRecordsBtn.click();
 }
 
+function clearAllChecks() {
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(cb => {
+    cb.checked = false;
+  });
+}
