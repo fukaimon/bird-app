@@ -1,6 +1,6 @@
 {
   "name": "野鳥記録アプリ",
-  "short_name": "BirdLog",
+  "short_name": "野鳥記録",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
