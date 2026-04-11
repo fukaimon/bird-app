@@ -6,6 +6,11 @@ const obsPlace = document.getElementById("obsPlace");
 const obsWeather = document.getElementById("obsWeather");
 const obsObserver = document.getElementById("obsObserver");
 
+// ===== sp.判定関数（★追加）=====
+function isSpName(name) {
+  return name.includes("sp.");
+}
+
 // ===== 鳥データ（ここから増やしていく） =====
 const birds = [
   {
@@ -1160,25 +1165,6 @@ const birds = [
   ]
 },
 {
-  family: "ゴマフスズメ科",
-  species: [
-    { id: 725, name: "ゴマフスズメ" },
-    { id: 726, name: "ミヤマシトド" },
-    { id: 727, name: "キガシラシトド" },
-    { id: 728, name: "サバンナシトド" },
-    { id: 729, name: "ウタスズメ" },
-    { id: 730, name: "ゴマフスズメ科sp." }
-  ]
-},
-{
-  family: "アメリカムシクイ科",
-  species: [
-    { id: 731, name: "カオグロアメリカムシクイ" },
-    { id: 732, name: "キヅタアメリカムシクイ" },
-    { id: 733, name: "アメリカムシクイ科sp." }
-  ]
-},
-{
   family: "外来種",
   species: [
     { id: 734, name: "カナダガン", alien: true  },
@@ -1282,12 +1268,11 @@ birds.forEach(familyGroup => {
   });
 });
 
-// ===== テキスト出力処理 =====
+// ===== テキスト出力処理（★修正済み）=====
 exportBtn.addEventListener("click", () => {
 
   let result = "";
 
-  // 種数カウンタ
   let nativeSpeciesCount = 0;
   let alienSpeciesCount = 0;
 
@@ -1317,16 +1302,26 @@ exportBtn.addEventListener("click", () => {
       const checkbox = document.getElementById("bird-" + bird.id);
       if (checkbox && checkbox.checked) {
 
-        if (bird.alien === true) {
-          alienSpeciesCount++;
-        } else {
-          nativeSpeciesCount++;
+        const isSp = isSpName(bird.name);
+
+        // ★ sp.は種数に含めない
+        if (!isSp) {
+          if (bird.alien === true) {
+            alienSpeciesCount++;
+          } else {
+            nativeSpeciesCount++;
+          }
         }
 
         const countInput = checkbox.nextSibling.nextSibling;
         const count = countInput.value ? countInput.value : "";
 
-        result += `${bird.name} ${count}\n`;
+        // ★ sp.は「・」付き
+        if (isSp) {
+          result += `・${bird.name} ${count}\n`;
+        } else {
+          result += `${bird.name} ${count}\n`;
+        }
       }
     });
   });
@@ -1337,7 +1332,6 @@ exportBtn.addEventListener("click", () => {
 
   output.textContent = result;
 });
-
 // ===== ボタンにイベントをつける（←これを一番下に！）=====
 const exportTextBtn = document.getElementById("exportTextBtn");
 
@@ -1558,6 +1552,28 @@ function clearAllChecks() {
   });
 }
 
+// ===== コピー機能 =====
+const copyBtn = document.getElementById("copyBtn");
+
+if (copyBtn) {
+  copyBtn.addEventListener("click", () => {
+
+    const text = output.textContent;
+
+    if (!text) {
+      alert("コピーする内容がありません");
+      return;
+    }
+
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        alert("コピーしました");
+      })
+      .catch(() => {
+        alert("コピーに失敗しました");
+      });
+  });
+}
 
 // ===============================
 // ★ 初期表示
