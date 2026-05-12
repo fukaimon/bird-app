@@ -1222,14 +1222,97 @@ const birds = [
 
 // ===== 表示処理（折りたたみ対応） =====
 const list = document.getElementById("birdList");
-const exportBtn = document.getElementById("exportBtn");
 const output = document.getElementById("output");
+const outputDrawer = document.getElementById("outputDrawer");
+const outputDrawerHandle = document.getElementById("outputDrawerHandle");
+const birdSearchInput = document.getElementById("birdSearchInput");
+const clearBirdSearchBtn = document.getElementById("clearBirdSearchBtn");
+
+function setOutputDrawerOpen(isOpen) {
+  if (!outputDrawer || !outputDrawerHandle) return;
+
+  outputDrawer.classList.toggle("open", isOpen);
+  outputDrawerHandle.setAttribute("aria-expanded", String(isOpen));
+}
+
+if (outputDrawer && outputDrawerHandle) {
+  let drawerTouchStartY = null;
+
+  outputDrawerHandle.addEventListener("click", () => {
+    setOutputDrawerOpen(!outputDrawer.classList.contains("open"));
+  });
+
+  outputDrawerHandle.addEventListener("touchstart", event => {
+    drawerTouchStartY = event.touches[0].clientY;
+  }, { passive: true });
+
+  outputDrawerHandle.addEventListener("touchend", event => {
+    if (drawerTouchStartY === null) return;
+
+    const touchEndY = event.changedTouches[0].clientY;
+    const diffY = touchEndY - drawerTouchStartY;
+
+    if (diffY < -35) {
+      setOutputDrawerOpen(true);
+    } else if (diffY > 35) {
+      setOutputDrawerOpen(false);
+    }
+
+    drawerTouchStartY = null;
+  }, { passive: true });
+}
+
+function normalizeSearchText(text) {
+  return text
+    .trim()
+    .toLowerCase()
+    .replace(/[ぁ-ん]/g, char => String.fromCharCode(char.charCodeAt(0) + 0x60));
+}
+
+function filterBirdList() {
+  if (!birdSearchInput) return;
+
+  const keyword = normalizeSearchText(birdSearchInput.value);
+  const familyTitles = list.querySelectorAll(".family-title");
+  let firstMatchedItem = null;
+
+  familyTitles.forEach(familyTitle => {
+    const familyList = familyTitle.nextElementSibling;
+    const familyName = familyTitle.dataset.familyName || "";
+    let matchCount = 0;
+
+    familyList.querySelectorAll("li").forEach(item => {
+      const birdName = item.dataset.birdName || "";
+      const birdMatches = !keyword || normalizeSearchText(birdName).includes(keyword);
+
+      item.hidden = !birdMatches;
+      item.classList.toggle("search-hit", Boolean(keyword && birdMatches));
+
+      if (keyword && birdMatches) {
+        matchCount++;
+        if (!firstMatchedItem) firstMatchedItem = item;
+      }
+    });
+
+    familyTitle.hidden = keyword ? matchCount === 0 : false;
+    familyList.hidden = keyword ? matchCount === 0 : false;
+    familyList.classList.toggle("search-results", Boolean(keyword && matchCount > 0));
+    familyTitle.textContent = keyword && matchCount > 0
+      ? `${familyName}（${matchCount}）`
+      : familyName;
+  });
+
+  if (firstMatchedItem) {
+    firstMatchedItem.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+}
 
 birds.forEach(familyGroup => {
   // 科の見出し
   const familyTitle = document.createElement("h2");
   familyTitle.textContent = familyGroup.family;
   familyTitle.classList.add("family-title");
+  familyTitle.dataset.familyName = familyGroup.family;
 
   // 科ごとのリスト（折りたたみ対象）
   const familyList = document.createElement("ul");
@@ -1246,6 +1329,7 @@ birds.forEach(familyGroup => {
 
   familyGroup.species.forEach(bird => {
     const li = document.createElement("li");
+    li.dataset.birdName = bird.name;
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -1259,6 +1343,10 @@ birds.forEach(familyGroup => {
     countInput.type = "text";
     countInput.placeholder = "数・メモ";
     countInput.style.width = "80px";
+    countInput.dataset.birdId = bird.id;
+
+    checkbox.addEventListener("change", updateOutputText);
+    countInput.addEventListener("input", updateOutputText);
 
     li.appendChild(checkbox);
     li.appendChild(label);
@@ -1268,9 +1356,36 @@ birds.forEach(familyGroup => {
   });
 });
 
-// ===== テキスト出力処理（★修正済み）=====
-exportBtn.addEventListener("click", () => {
+if (birdSearchInput) {
+  birdSearchInput.addEventListener("input", filterBirdList);
+}
 
+if (clearBirdSearchBtn && birdSearchInput) {
+  clearBirdSearchBtn.addEventListener("click", () => {
+    birdSearchInput.value = "";
+    filterBirdList();
+    birdSearchInput.focus();
+  });
+}
+
+// ===== テキスト出力処理（自動更新対応）=====
+const todayDraftKey = "birdTodayDraft";
+let isRestoringDraft = false;
+
+function getTodayString() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getCountInputForCheckbox(checkbox) {
+  if (!checkbox || !checkbox.parentElement) return null;
+  return checkbox.parentElement.querySelector('input[type="text"]');
+}
+
+function buildOutputText() {
   let result = "";
 
   let nativeSpeciesCount = 0;
@@ -1313,8 +1428,8 @@ exportBtn.addEventListener("click", () => {
           }
         }
 
-        const countInput = checkbox.nextSibling.nextSibling;
-        const count = countInput.value ? countInput.value : "";
+        const countInput = getCountInputForCheckbox(checkbox);
+        const count = countInput && countInput.value ? countInput.value : "";
 
         // ★ sp.は「・」付き
         if (isSp) {
@@ -1330,46 +1445,16 @@ exportBtn.addEventListener("click", () => {
   result += `確認種数：${nativeSpeciesCount}種\n`;
   result += `＋${alienSpeciesCount}種\n`;
 
-  output.textContent = result;
-});
-// ===== ボタンにイベントをつける（←これを一番下に！）=====
-const exportTextBtn = document.getElementById("exportTextBtn");
-
-if (exportTextBtn) {
-  exportTextBtn.addEventListener("click", exportText);
+  return result;
 }
 
-// ===== テキスト保存 =====
-const saveBtn = document.getElementById("saveBtn");
-const saveAsNewBtn = document.getElementById("saveAsNewBtn");
-const showRecordsBtn = document.getElementById("showRecordsBtn");
-const recordList = document.getElementById("recordList");
-
-// ===============================
-// 0. 現在編集中の記録番号
-// ===============================
-let currentRecordIndex = null;
-
-
-// ===============================
-// ★ 追加：保存ボタン表示切替
-// ===============================
-function updateSaveButtonLabel() {
-
-  if (currentRecordIndex !== null) {
-    saveBtn.textContent = "上書き保存";
-  } else {
-    saveBtn.textContent = "保存";
-  }
-
+function updateOutputText() {
+  if (!output) return;
+  output.textContent = buildOutputText();
+  saveTodayDraft();
 }
 
-
-// ===============================
-// 共通：フォーム内容を取得
-// ===============================
-function collectRecordData() {
-
+function collectCurrentDraftData() {
   let record = {
     date: obsDate.value,
     startTime: obsStartTime.value,
@@ -1383,8 +1468,15 @@ function collectRecordData() {
   birds.forEach(familyGroup => {
     familyGroup.species.forEach(bird => {
       const checkbox = document.getElementById("bird-" + bird.id);
-      if (checkbox && checkbox.checked) {
-        record.birds.push(bird.id);
+      const countInput = getCountInputForCheckbox(checkbox);
+      const count = countInput ? countInput.value : "";
+
+      if ((checkbox && checkbox.checked) || count) {
+        record.birds.push({
+          id: bird.id,
+          count: count,
+          checked: checkbox ? checkbox.checked : false
+        });
       }
     });
   });
@@ -1392,164 +1484,75 @@ function collectRecordData() {
   return record;
 }
 
+function saveTodayDraft() {
+  if (isRestoringDraft) return;
 
-// ===============================
-// ① 上書き保存
-// ===============================
-saveBtn.addEventListener("click", () => {
+  const draft = {
+    startedOn: getTodayString(),
+    record: collectCurrentDraftData()
+  };
 
-  let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
-  let record = collectRecordData();
+  localStorage.setItem(todayDraftKey, JSON.stringify(draft));
+}
 
-  if (currentRecordIndex !== null) {
+function restoreTodayDraft() {
+  const savedDraft = localStorage.getItem(todayDraftKey);
+  if (!savedDraft) return;
 
-    records[currentRecordIndex] = record;
-    alert("記録を上書き保存しました");
-
-  } else {
-
-    records.push(record);
-    alert("記録を保存しました");
-  }
-
-  localStorage.setItem("birdRecords", JSON.stringify(records));
-
-  currentRecordIndex = null;
-  updateSaveButtonLabel();   // ★追加
-});
-
-
-// ===============================
-// ② 新規保存（別名保存）
-// ===============================
-saveAsNewBtn.addEventListener("click", () => {
-
-  let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
-  let record = collectRecordData();
-
-  records.push(record);
-
-  localStorage.setItem("birdRecords", JSON.stringify(records));
-
-  alert("新規記録として保存しました");
-
-  currentRecordIndex = null;
-  updateSaveButtonLabel();   // ★追加
-});
-
-
-// ===============================
-// ③ 保存済み記録を表示／折りたたみ
-// ===============================
-showRecordsBtn.addEventListener("click", () => {
-
-  if (recordList.style.display === "block") {
-    recordList.style.display = "none";
-    showRecordsBtn.textContent = "保存済み記録を表示";
+  let draft;
+  try {
+    draft = JSON.parse(savedDraft);
+  } catch {
+    localStorage.removeItem(todayDraftKey);
     return;
   }
 
-  recordList.style.display = "block";
-  showRecordsBtn.textContent = "保存済み記録を閉じる";
-  recordList.innerHTML = "";
-
-  let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
-
-  if (records.length === 0) {
-    recordList.textContent = "保存された記録はありません";
+  if (!draft || draft.startedOn !== getTodayString() || !draft.record) {
+    localStorage.removeItem(todayDraftKey);
     return;
   }
 
-  records.forEach((record, index) => {
+  isRestoringDraft = true;
 
-    const row = document.createElement("div");
-    const title = document.createElement("span");
-
-    let dateText = "日付なし";
-    if (record.date) {
-      dateText = record.date.replace(/-/g, "/");
-    }
-
-    title.textContent = dateText + " " + (record.place || "");
-
-    const openBtn = document.createElement("button");
-    openBtn.textContent = "開く";
-    openBtn.addEventListener("click", () => {
-      openRecord(index);
-    });
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "削除";
-    deleteBtn.addEventListener("click", () => {
-      deleteRecord(index);
-    });
-
-    row.appendChild(title);
-    row.appendChild(openBtn);
-    row.appendChild(deleteBtn);
-
-    recordList.appendChild(row);
-  });
-});
-
-
-// ===============================
-// ④ 記録を開く
-// ===============================
-function openRecord(index) {
-
-  let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
-  let record = records[index];
-  if (!record) return;
-
-  currentRecordIndex = index;
-  updateSaveButtonLabel();   // ★追加
-
-  obsDate.value = record.date || "";
-  obsStartTime.value = record.startTime || "";
-  obsEndTime.value = record.endTime || "";
-  obsPlace.value = record.place || "";
-  obsWeather.value = record.weather || "";
-  obsObserver.value = record.observer || "";
+  obsDate.value = draft.record.date || "";
+  obsStartTime.value = draft.record.startTime || "";
+  obsEndTime.value = draft.record.endTime || "";
+  obsPlace.value = draft.record.place || "";
+  obsWeather.value = draft.record.weather || "";
+  obsObserver.value = draft.record.observer || "";
 
   clearAllChecks();
 
-  record.birds.forEach(id => {
-    const checkbox = document.getElementById("bird-" + id);
-    if (checkbox) checkbox.checked = true;
+  (draft.record.birds || []).forEach(item => {
+    const birdData = typeof item === "object" ? item : { id: item, checked: true, count: "" };
+    const checkbox = document.getElementById("bird-" + birdData.id);
+    if (!checkbox) return;
+
+    checkbox.checked = birdData.checked !== false;
+
+    const countInput = getCountInputForCheckbox(checkbox);
+    if (countInput) countInput.value = birdData.count || "";
   });
+
+  isRestoringDraft = false;
 }
 
+[
+  obsDate,
+  obsStartTime,
+  obsEndTime,
+  obsPlace,
+  obsWeather,
+  obsObserver
+].forEach(input => {
+  input.addEventListener("input", updateOutputText);
+  input.addEventListener("change", updateOutputText);
+});
+// ===== ボタンにイベントをつける（←これを一番下に！）=====
+const exportTextBtn = document.getElementById("exportTextBtn");
 
-// ===============================
-// ⑤ 記録を削除
-// ===============================
-function deleteRecord(index) {
-
-  if (!confirm("この記録を削除しますか？")) return;
-
-  let records = JSON.parse(localStorage.getItem("birdRecords")) || [];
-  records.splice(index, 1);
-
-  localStorage.setItem("birdRecords", JSON.stringify(records));
-
-  alert("削除しました");
-
-  if (currentRecordIndex === index) {
-    currentRecordIndex = null;
-    updateSaveButtonLabel();   // ★追加
-  }
-
-  showRecordsBtn.click();
-}
-
-
-// ===============================
-function clearAllChecks() {
-  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-  checkboxes.forEach(cb => {
-    cb.checked = false;
-  });
+if (exportTextBtn) {
+  exportTextBtn.addEventListener("click", exportText);
 }
 
 // ===== コピー機能 =====
@@ -1578,10 +1581,19 @@ if (copyBtn) {
 // ===============================
 // ★ 初期表示
 // ===============================
-updateSaveButtonLabel();
+restoreTodayDraft();
+updateOutputText();
+
 function clearAllChecks() {
   const checkboxes = document.querySelectorAll('input[type="checkbox"]');
   checkboxes.forEach(cb => {
     cb.checked = false;
   });
+
+  const birdMemoInputs = document.querySelectorAll('#birdList input[type="text"]');
+  birdMemoInputs.forEach(input => {
+    input.value = "";
+  });
+
+  updateOutputText();
 }
