@@ -10,7 +10,7 @@
 <body>
 
 <h1>野鳥記録アプリ</h1>
-<p><div id="meta">
+<div id="meta">
 
 
   <div>
@@ -38,21 +38,34 @@
     <input type="text" id="obsObserver" placeholder="氏名">
   </div>
 
-</div></p>
+</div>
 
-<button id="saveBtn">この記録を保存</button>
-<button id="showRecordsBtn">保存済み記録を表示</button>
-<button id="saveAsNewBtn">新規保存</button>
-<button onclick="clearAllChecks()">✓をすべて解除</button>
+<button onclick="clearAllChecks()">一から始める</button>
 
-<div id="recordList" style="display:none;"></div>
-
+<div id="birdSearch">
+  <label for="birdSearchInput">鳥を検索：</label>
+  <input type="search" id="birdSearchInput" placeholder="例：マガモ">
+  <button id="clearBirdSearchBtn" type="button">クリア</button>
+</div>
 
 <ul id="birdList"></ul>
 
-<button id="exportBtn">テキスト出力</button>
-<button id="copyBtn">コピー</button>
-<pre id="output"></pre>
+<section id="outputDrawer" class="output-drawer" aria-label="今日見た鳥">
+  <button id="outputDrawerHandle" class="output-drawer__handle" type="button" aria-expanded="false" aria-controls="outputDrawerContent">
+    <span class="output-drawer__bar"></span>
+    <span>今日見た鳥</span>
+  </button>
+
+  <div id="outputDrawerContent" class="output-drawer__content">
+    <div class="output-drawer__header">
+      <strong>今日見た鳥</strong>
+      <div class="output-drawer__actions">
+        <button id="copyBtn" type="button">コピー</button>
+      </div>
+    </div>
+    <pre id="output"></pre>
+  </div>
+</section>
 
 <script src="app.js"></script>
 
