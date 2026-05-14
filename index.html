@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>鳥合わせ</title>
-  <meta name="theme-color" content="#ffe6f0">
+  <meta name="theme-color" content="#e5f0e7">
   <meta name="description" content="野鳥の観察記録を入力して、今日見た鳥の一覧を作成するアプリです。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -34,6 +34,50 @@
   <div>
     <label>場所：</label>
     <input type="text" id="obsPlace" placeholder="例：東京都○○公園">
+  </div>
+
+  <div>
+    <label>天候：</label>
+    <input type="text" id="obsWeather" placeholder="例：晴れ・曇">
+  </div>
+
+  <div>
+    <label>観察者：</label>
+    <input type="text" id="obsObserver" placeholder="氏名">
+  </div>
+
+  </div>
+
+  <div id="birdSearch">
+    <label for="birdSearchInput">鳥を検索：</label>
+    <input type="search" id="birdSearchInput" placeholder="例：マガモ">
+    <button id="clearBirdSearchBtn" type="button">クリア</button>
+  </div>
+
+  <ul id="birdList"></ul>
+</main>
+
+<section id="outputDrawer" class="output-drawer" aria-label="今日見た鳥">
+  <button id="outputDrawerHandle" class="output-drawer__handle" type="button" aria-expanded="false" aria-controls="outputDrawerContent">
+    <span class="output-drawer__bar"></span>
+    <span>今日見た鳥</span>
+  </button>
+
+  <div id="outputDrawerContent" class="output-drawer__content">
+    <div class="output-drawer__header">
+      <strong>今日見た鳥</strong>
+      <div class="output-drawer__actions">
+        <button id="copyBtn" type="button">コピー</button>
+      </div>
+    </div>
+    <pre id="output"></pre>
+  </div>
+</section>
+
+<script src="app.js"></script>
+
+</body>
+</html>
   </div>
 
   <div>
