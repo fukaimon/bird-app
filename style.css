@@ -3,17 +3,40 @@
 }
 
 body {
+  --output-drawer-height: 58px;
+
   margin: 0;
-  padding: 16px 16px 96px;
   color: #1f2933;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.5;
-  background: #f7faf7;
+  background: #ffe6f0;
+}
+
+.app-content {
+  padding: 16px 16px 96px;
+}
+
+body.output-drawer-is-open .app-content {
+  height: calc(100vh - var(--output-drawer-height));
+  overflow: auto;
+  padding-bottom: 96px;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 16px;
 }
 
 h1 {
-  margin: 0 0 16px;
+  margin: 0;
   font-size: 1.6rem;
+}
+
+.app-header button {
+  flex-shrink: 0;
 }
 
 #meta {
@@ -36,6 +59,7 @@ input {
   border: 1px solid #c8d4cc;
   border-radius: 6px;
   background: #fff;
+  text-align: left;
 }
 
 button {
@@ -57,12 +81,13 @@ button:active {
 }
 
 #birdSearch {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
-  margin: 4px 0 4px 8px;
+  width: 100%;
+  margin: 12px 0 0;
   min-height: 40px;
-  padding: 0 8px;
+  padding: 8px 12px;
   border: 1px solid #d7e2d8;
   border-radius: 8px;
   background: #fff;
@@ -72,8 +97,14 @@ button:active {
 
 #birdSearchInput {
   flex: 1;
-  min-width: 0;
+  min-width: 120px;
   font-size: 1rem;
+}
+
+#birdSearch label,
+#clearBirdSearchBtn {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 #clearBirdSearchBtn {
@@ -221,8 +252,12 @@ button:active {
 }
 
 @media (max-width: 640px) {
-  body {
+  .app-content {
     padding: 12px 12px 96px;
+  }
+
+  body.output-drawer-is-open .app-content {
+    padding-bottom: 96px;
   }
 
   #meta > div {
@@ -231,7 +266,7 @@ button:active {
   }
 
   #birdSearch {
-    display: inline-grid;
+    gap: 6px;
   }
 
   .output-drawer__header {
