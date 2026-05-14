@@ -1,20 +1,19 @@
 {
-  "name": "野鳥記録アプリ",
-  "short_name": "野鳥記録",
-  "start_url": "./index.html",
+  "name": "鳥合わせ",
+  "short_name": "鳥合わせ",
+  "description": "野鳥の観察記録を入力して、今日見た鳥の一覧を作成するアプリです。",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#2e7d32",
+  "background_color": "#f7faf7",
+  "theme_color": "#e5f0e7",
+  "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }
