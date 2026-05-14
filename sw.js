@@ -1,4 +1,4 @@
-const CACHE_NAME = "toriawase-v3";
+const CACHE_NAME = "toriawase-v6";
 const OFFLINE_URL = new URL("./index.html", self.registration.scope).href;
 const APP_ASSETS = [
   "./",
@@ -14,9 +14,22 @@ const APP_ASSETS = [
 
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(APP_ASSETS))
-      .then(() => self.skipWaiting())
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+
+      await Promise.all(APP_ASSETS.map(async assetUrl => {
+        try {
+          const response = await fetch(assetUrl, { cache: "reload" });
+          if (response.ok) {
+            await cache.put(assetUrl, response);
+          }
+        } catch (error) {
+          console.warn("Failed to cache:", assetUrl, error);
+        }
+      }));
+
+      await self.skipWaiting();
+    })()
   );
 });
 
@@ -37,7 +50,14 @@ self.addEventListener("fetch", event => {
 
   if (event.request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match(OFFLINE_URL))
+      fetch(event.request)
+        .then(response => {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME)
+            .then(cache => cache.put(OFFLINE_URL, responseToCache));
+          return response;
+        })
+        .catch(() => caches.match(OFFLINE_URL))
     );
     return;
   }
@@ -58,32 +78,8 @@ self.addEventListener("fetch", event => {
               .then(cache => cache.put(event.request, responseToCache));
 
             return networkResponse;
-          });
-      })
-  );
-});
-      fetch(event.request).catch(() => caches.match("./index.html"))
-    );
-    return;
-  }
-
-  event.respondWith(
-    caches.match(event.request)
-      .then(cachedResponse => {
-        if (cachedResponse) return cachedResponse;
-
-        return fetch(event.request)
-          .then(networkResponse => {
-            if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== "basic") {
-              return networkResponse;
-            }
-
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME)
-              .then(cache => cache.put(event.request, responseToCache));
-
-            return networkResponse;
-          });
+          })
+          .catch(() => caches.match(OFFLINE_URL));
       })
   );
 });
