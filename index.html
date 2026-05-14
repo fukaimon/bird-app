@@ -3,14 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>野鳥記録</title>
+  <title>鳥合わせ</title>
+  <meta name="theme-color" content="#ffe6f0">
+  <meta name="description" content="野鳥の観察記録を入力して、今日見た鳥の一覧を作成するアプリです。">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
   <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
-<h1>野鳥記録アプリ</h1>
-<div id="meta">
+<main id="appContent" class="app-content">
+  <header class="app-header">
+    <h1>鳥合わせ</h1>
+    <button type="button" onclick="clearAllChecks()">一から始める</button>
+  </header>
+  <div id="meta">
 
 
   <div>
@@ -38,17 +46,16 @@
     <input type="text" id="obsObserver" placeholder="氏名">
   </div>
 
-</div>
+  </div>
 
-<button onclick="clearAllChecks()">一から始める</button>
+  <div id="birdSearch">
+    <label for="birdSearchInput">鳥を検索：</label>
+    <input type="search" id="birdSearchInput" placeholder="例：マガモ">
+    <button id="clearBirdSearchBtn" type="button">クリア</button>
+  </div>
 
-<div id="birdSearch">
-  <label for="birdSearchInput">鳥を検索：</label>
-  <input type="search" id="birdSearchInput" placeholder="例：マガモ">
-  <button id="clearBirdSearchBtn" type="button">クリア</button>
-</div>
-
-<ul id="birdList"></ul>
+  <ul id="birdList"></ul>
+</main>
 
 <section id="outputDrawer" class="output-drawer" aria-label="今日見た鳥">
   <button id="outputDrawerHandle" class="output-drawer__handle" type="button" aria-expanded="false" aria-controls="outputDrawerContent">
@@ -68,12 +75,6 @@
 </section>
 
 <script src="app.js"></script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
-}
-</script>
 
 </body>
 </html>
