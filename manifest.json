@@ -2,7 +2,7 @@
   "name": "鳥合わせ",
   "short_name": "鳥合わせ",
   "description": "野鳥の観察記録を入力して、今日見た鳥の一覧を作成するアプリです。",
-  "start_url": "./",
+  "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f7faf7",
