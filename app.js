@@ -1233,13 +1233,29 @@ function updateOutputDrawerHeight() {
   document.body.style.setProperty("--output-drawer-height", `${outputDrawer.offsetHeight}px`);
 }
 
+function getPageBottomGap() {
+  const scrollingElement = document.scrollingElement || document.documentElement;
+  return scrollingElement.scrollHeight - window.innerHeight - window.scrollY;
+}
+
 function setOutputDrawerOpen(isOpen) {
   if (!outputDrawer || !outputDrawerHandle) return;
+
+  const wasOpen = outputDrawer.classList.contains("open");
+  const bottomGapBeforeOpen = getPageBottomGap();
+  const newlyCoveredHeight = Math.max(0, outputDrawer.offsetHeight - outputDrawerHandle.offsetHeight);
 
   outputDrawer.classList.toggle("open", isOpen);
   document.body.classList.toggle("output-drawer-is-open", isOpen);
   updateOutputDrawerHeight();
   outputDrawerHandle.setAttribute("aria-expanded", String(isOpen));
+
+  if (isOpen && !wasOpen && bottomGapBeforeOpen < newlyCoveredHeight) {
+    window.scrollBy({
+      top: newlyCoveredHeight - bottomGapBeforeOpen,
+      behavior: "auto"
+    });
+  }
 }
 
 if (outputDrawer && outputDrawerHandle) {
