@@ -1228,15 +1228,25 @@ const outputDrawerHandle = document.getElementById("outputDrawerHandle");
 const birdSearchInput = document.getElementById("birdSearchInput");
 const clearBirdSearchBtn = document.getElementById("clearBirdSearchBtn");
 
+function updateOutputDrawerHeight() {
+  if (!outputDrawer) return;
+  document.body.style.setProperty("--output-drawer-height", `${outputDrawer.offsetHeight}px`);
+}
+
 function setOutputDrawerOpen(isOpen) {
   if (!outputDrawer || !outputDrawerHandle) return;
 
   outputDrawer.classList.toggle("open", isOpen);
+  document.body.classList.toggle("output-drawer-is-open", isOpen);
+  updateOutputDrawerHeight();
   outputDrawerHandle.setAttribute("aria-expanded", String(isOpen));
 }
 
 if (outputDrawer && outputDrawerHandle) {
   let drawerTouchStartY = null;
+
+  updateOutputDrawerHeight();
+  window.addEventListener("resize", updateOutputDrawerHeight);
 
   outputDrawerHandle.addEventListener("click", () => {
     setOutputDrawerOpen(!outputDrawer.classList.contains("open"));
@@ -1390,6 +1400,8 @@ function buildOutputText() {
 
   let nativeSpeciesCount = 0;
   let alienSpeciesCount = 0;
+  const nativeBirdLines = [];
+  const alienBirdLines = [];
 
   // ---- 観察情報 ----
   if (obsDate.value) {
@@ -1431,19 +1443,30 @@ function buildOutputText() {
         const countInput = getCountInputForCheckbox(checkbox);
         const count = countInput && countInput.value ? countInput.value : "";
 
-        // ★ sp.は「・」付き
-        if (isSp) {
-          result += `・${bird.name} ${count}\n`;
+        const birdLine = isSp
+          ? `・${bird.name} ${count}`
+          : `${bird.name} ${count}`;
+
+        if (bird.alien === true) {
+          alienBirdLines.push(birdLine);
         } else {
-          result += `${bird.name} ${count}\n`;
+          nativeBirdLines.push(birdLine);
         }
       }
     });
   });
 
+  if (nativeBirdLines.length > 0) {
+    result += `${nativeBirdLines.join("\n")}\n`;
+  }
+
   result += "\n";
   result += `確認種数：${nativeSpeciesCount}種\n`;
   result += `＋${alienSpeciesCount}種\n`;
+
+  if (alienBirdLines.length > 0) {
+    result += `${alienBirdLines.join("\n")}\n`;
+  }
 
   return result;
 }
@@ -1451,6 +1474,7 @@ function buildOutputText() {
 function updateOutputText() {
   if (!output) return;
   output.textContent = buildOutputText();
+  updateOutputDrawerHeight();
   saveTodayDraft();
 }
 
@@ -1596,4 +1620,12 @@ function clearAllChecks() {
   });
 
   updateOutputText();
+}
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(error => {
+      console.warn("Service worker registration failed:", error);
+    });
+  });
 }
