@@ -1,4 +1,4 @@
-const CACHE_NAME = "toriawase-v1";
+const CACHE_NAME = "toriawase-v2";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -32,22 +32,30 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
 
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match("./index.html"))
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then(cachedResponse => {
         if (cachedResponse) return cachedResponse;
 
-        return fetch(event.request).then(networkResponse => {
-          if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== "basic") {
+        return fetch(event.request)
+          .then(networkResponse => {
+            if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== "basic") {
+              return networkResponse;
+            }
+
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME)
+              .then(cache => cache.put(event.request, responseToCache));
+
             return networkResponse;
-          }
-
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME)
-            .then(cache => cache.put(event.request, responseToCache));
-
-          return networkResponse;
-        });
+          });
       })
   );
 });
