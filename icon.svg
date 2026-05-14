@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="鳥合わせ">
+  <rect width="512" height="512" rx="112" fill="#e5f0e7"/>
+  <circle cx="256" cy="256" r="190" fill="#f7faf7"/>
+  <path fill="#2f5f3b" d="M146 281c0-88 72-160 160-160 34 0 66 11 92 29-24 5-46 17-63 35 49 12 85 56 85 108 0 62-50 112-112 112h-67c-52 0-95-42-95-94v-30Z"/>
+  <path fill="#17351f" d="M340 206c22 0 41 12 50 30l51 16-50 18c-8 19-27 33-51 33-31 0-56-25-56-56s25-41 56-41Z"/>
+  <circle cx="360" cy="232" r="10" fill="#fff"/>
+  <path fill="#87a28d" d="M189 325c36 12 75 12 112 0-12 30-32 49-56 49s-44-19-56-49Z"/>
+  <path fill="none" stroke="#17351f" stroke-linecap="round" stroke-width="22" d="M148 180c-31 31-48 72-48 116m54 93c24 23 55 39 90 44"/>
+</svg>
