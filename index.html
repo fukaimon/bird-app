@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>鳥合わせ</title>
+  <meta name="theme-color" content="#e5f0e7">
+  <meta name="description" content="野鳥の観察記録を入力して、今日見た鳥の一覧を作成するアプリです。">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="鳥合わせ">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.ico?v=32" sizes="192x192">
+  <link rel="shortcut icon" href="favicon.ico?v=32">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+  <link rel="stylesheet" href="style.css?v=33">
+</head>
+<body>
+
+<main id="appContent" class="app-content">
+  <header class="app-header">
+    <h1>鳥合わせ</h1>
+    <div class="app-header__actions">
+      <button id="checkedOnlyBtn" class="icon-button" type="button" aria-pressed="false" aria-label="チェック済みだけ表示"></button>
+      <button id="clearAllBtn" type="button">一から始める</button>
+      <button id="settingsBtn" class="settings-button" type="button" aria-label="設定">⚙</button>
+    </div>
+  </header>
+
+  <div id="meta">
+    <div class="meta-row meta-row--datetime">
+      <div class="meta-field">
+        <label for="obsDate">日付：</label>
+        <input type="date" id="obsDate">
+      </div>
+      <div class="meta-field">
+        <label for="obsStartTime">開始：</label>
+        <input type="time" id="obsStartTime">
+      </div>
+      <div class="meta-field">
+        <label for="obsEndTime">終了：</label>
+        <input type="time" id="obsEndTime">
+      </div>
+    </div>
+
+    <div>
+      <label for="obsPlace">場所：</label>
+      <input type="text" id="obsPlace" placeholder="例：東京都○○公園">
+    </div>
+
+    <div>
+      <label for="obsWeather">天候：</label>
+      <input type="text" id="obsWeather" placeholder="例：晴れ・曇">
+    </div>
+
+    <div>
+      <label for="obsObserver">観察者：</label>
+      <input type="text" id="obsObserver" placeholder="氏名">
+    </div>
+  </div>
+
+  <div id="birdSearch">
+    <label for="birdSearchInput">鳥を検索：</label>
+    <input type="search" id="birdSearchInput" placeholder="例：マガモ">
+    <button id="clearBirdSearchBtn" type="button" aria-label="検索語をクリア">クリア</button>
+  </div>
+
+  <div id="birdList"></div>
+</main>
+
+<section id="outputDrawer" class="output-drawer" aria-label="今日見た鳥">
+  <div class="output-drawer__handle">
+    <button id="outputDrawerHandle" class="output-drawer__toggle" type="button" aria-expanded="false" aria-controls="outputDrawerContent">
+      <span class="output-drawer__bar"></span>
+      <span>今日見た鳥は？</span>
+    </button>
+    <button id="closeOutputDrawerBtn" class="output-drawer__close" type="button" aria-label="今日見た鳥を閉じる">×</button>
+  </div>
+
+  <div id="outputDrawerContent" class="output-drawer__content">
+    <div class="output-drawer__header">
+      <div class="output-drawer__actions">
+        <button id="copyBtn" type="button">コピー</button>
+      </div>
+    </div>
+    <pre id="output"></pre>
+  </div>
+</section>
+
+<script src="app.js?v=33"></script>
+
+</body>
+</html>
