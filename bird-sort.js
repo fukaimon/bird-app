@@ -10,8 +10,18 @@ async function loadBirdOrder() {
   if (birdOrder.length > 0) return birdOrder;
 
   const birds = await loadBirds();
-  birdOrder = birds.flatMap(familyGroup => familyGroup.species.map(bird => bird.name));
-  birdOrderIndexes = new Map(birdOrder.map((name, index) => [name, index]));
+  birdOrder = birds.flatMap(familyGroup => familyGroup.species);
+  birdOrderIndexes = new Map();
+
+  birdOrder.forEach((bird, index) => {
+    if (!birdOrderIndexes.has(bird.name) || bird.alien !== true) {
+      birdOrderIndexes.set(bird.name, index);
+    }
+
+    if (bird.alien === true) {
+      birdOrderIndexes.set(getBirdDisplayName(bird), index);
+    }
+  });
 
   return birdOrder;
 }

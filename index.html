@@ -11,10 +11,10 @@
   <meta name="apple-mobile-web-app-title" content="鳥合わせ">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="favicon.ico?v=32" sizes="192x192">
-  <link rel="shortcut icon" href="favicon.ico?v=32">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=35">
+  <link rel="shortcut icon" type="image/png" href="icons/icon-192.png?v=35">
   <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
-  <link rel="stylesheet" href="style.css?v=33">
+  <link rel="stylesheet" href="style.css?v=69">
 </head>
 <body>
 
@@ -22,9 +22,19 @@
   <header class="app-header">
     <h1>鳥合わせ</h1>
     <div class="app-header__actions">
-      <button id="checkedOnlyBtn" class="icon-button" type="button" aria-pressed="false" aria-label="チェック済みだけ表示"></button>
+      <button id="checkedOnlyBtn" class="icon-button" type="button" aria-pressed="false" aria-label="チェック済みだけ表示">
+        <svg class="button-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+          <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+          <path d="M8 12.5l2.7 2.7L16.5 8.8"></path>
+        </svg>
+      </button>
       <button id="clearAllBtn" type="button">一から始める</button>
-      <button id="settingsBtn" class="settings-button" type="button" aria-label="設定">⚙</button>
+      <button id="settingsBtn" class="settings-button" type="button" aria-label="設定">
+        <svg class="button-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+          <path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z"></path>
+          <path d="M19.4 15a1.8 1.8 0 0 0 .4 2l.1.1a2.1 2.1 0 1 1-3 3l-.1-.1a1.8 1.8 0 0 0-2-.4 1.8 1.8 0 0 0-1.1 1.7v.2a2.1 2.1 0 1 1-4.2 0v-.2a1.8 1.8 0 0 0-1.1-1.7 1.8 1.8 0 0 0-2 .4l-.1.1a2.1 2.1 0 1 1-3-3l.1-.1a1.8 1.8 0 0 0 .4-2 1.8 1.8 0 0 0-1.7-1.1H2a2.1 2.1 0 1 1 0-4.2h.2a1.8 1.8 0 0 0 1.7-1.1 1.8 1.8 0 0 0-.4-2l-.1-.1a2.1 2.1 0 1 1 3-3l.1.1a1.8 1.8 0 0 0 2 .4 1.8 1.8 0 0 0 1.1-1.7V2a2.1 2.1 0 1 1 4.2 0v.2a1.8 1.8 0 0 0 1.1 1.7 1.8 1.8 0 0 0 2-.4l.1-.1a2.1 2.1 0 1 1 3 3l-.1.1a1.8 1.8 0 0 0-.4 2 1.8 1.8 0 0 0 1.7 1.1h.2a2.1 2.1 0 1 1 0 4.2h-.2a1.8 1.8 0 0 0-1.8 1.2z"></path>
+        </svg>
+      </button>
     </div>
   </header>
 
@@ -35,11 +45,11 @@
         <input type="date" id="obsDate">
       </div>
       <div class="meta-field">
-        <label for="obsStartTime">開始：</label>
+        <label for="obsStartTime">開始時刻：</label>
         <input type="time" id="obsStartTime">
       </div>
       <div class="meta-field">
-        <label for="obsEndTime">終了：</label>
+        <label for="obsEndTime">終了時刻：</label>
         <input type="time" id="obsEndTime">
       </div>
     </div>
@@ -62,7 +72,7 @@
 
   <div id="birdSearch">
     <label for="birdSearchInput">鳥を検索：</label>
-    <input type="search" id="birdSearchInput" placeholder="例：マガモ">
+    <input type="search" id="birdSearchInput" placeholder="鳥の種名を入れてください">
     <button id="clearBirdSearchBtn" type="button" aria-label="検索語をクリア">クリア</button>
   </div>
 
@@ -88,7 +98,8 @@
   </div>
 </section>
 
-<script src="app.js?v=33"></script>
+<script src="bird-data.js?v=66"></script>
+<script src="app.js?v=67"></script>
 
 </body>
 </html>

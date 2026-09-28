@@ -19,7 +19,13 @@ async function loadBirdIndexesByName() {
   birdIndexesByName = new Map();
   birds.forEach(familyGroup => {
     familyGroup.species.forEach(bird => {
-      birdIndexesByName.set(bird.name, bird);
+      if (!birdIndexesByName.has(bird.name) || bird.alien !== true) {
+        birdIndexesByName.set(bird.name, bird);
+      }
+
+      if (bird.alien === true) {
+        birdIndexesByName.set(getBirdDisplayName(bird), bird);
+      }
     });
   });
 
@@ -33,6 +39,7 @@ function parseInputLine(line) {
   if (!match) return null;
 
   return {
+    originalText: trimmedLine,
     name: match[1],
     count: match[2] ? match[2].trim() : ""
   };
@@ -46,14 +53,14 @@ function getInputRows() {
 }
 
 function saveImportedDraft(rows, birdMap) {
-  const unknownNames = [];
+  const memoLines = [];
   const importedBirds = [];
 
   rows.forEach(row => {
     const bird = birdMap.get(row.name);
 
     if (!bird) {
-      unknownNames.push(row.name);
+      memoLines.push(row.originalText);
       return;
     }
 
@@ -64,8 +71,8 @@ function saveImportedDraft(rows, birdMap) {
     });
   });
 
-  if (importedBirds.length === 0) {
-    alert("入力された鳥が見つかりませんでした");
+  if (importedBirds.length === 0 && memoLines.length === 0) {
+    alert("入力された内容が見つかりませんでした");
     return false;
   }
 
@@ -78,14 +85,15 @@ function saveImportedDraft(rows, birdMap) {
       place: "",
       weather: "",
       observer: "",
+      memo: memoLines.join("\n"),
       birds: importedBirds
     }
   };
 
   localStorage.setItem(todayDraftKey, JSON.stringify(draft));
 
-  if (unknownNames.length > 0) {
-    alert(`見つからなかった鳥があります：\n${unknownNames.join("\n")}`);
+  if (memoLines.length > 0) {
+    alert(`種名に完全一致しなかった行をメモに入れました：\n${memoLines.join("\n")}`);
   }
 
   return true;

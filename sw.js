@@ -1,4 +1,4 @@
-const CACHE_NAME = "toriawase-v33";
+const CACHE_NAME = "toriawase-v70";
 const OFFLINE_URL = new URL("./index.html", self.registration.scope).href;
 const APP_ASSETS = [
   "./",
@@ -6,12 +6,12 @@ const APP_ASSETS = [
   "./settings.html",
   "./bird-sort.html",
   "./data-input.html",
-  "./favicon.ico?v=32",
-  "./style.css?v=33",
-  "./app.js?v=33",
-  "./bird-data.js?v=33",
-  "./bird-sort.js?v=33",
-  "./data-input.js?v=33",
+  "./icons/icon-192.png?v=35",
+  "./style.css?v=69",
+  "./app.js?v=67",
+  "./bird-data.js?v=66",
+  "./bird-sort.js?v=66",
+  "./data-input.js?v=67",
   "./manifest.webmanifest",
   "./icons/icon-180.png",
   "./icons/icon-192.png",
